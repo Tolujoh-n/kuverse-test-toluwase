@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Nav from "./components/Nav";
+import Sidenav from "./components/Sidenav";
+import { Web3Provider } from "./Web3Provider";
+
 import {
   connectors,
   connectorLocalStorageKey,
@@ -23,6 +28,17 @@ import FooterMobile from "./components/pages/FooterMobile/Footer";
 import { device } from "./components/devices";
 import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 import Identicon from "@polkadot/react-identicon";
+
+// Css files
+import "./assets/vendor/simple-datatables/style.css";
+import "./assets/vendor/remixicon/remixicon.css";
+import "./assets/vendor/quill/quill.bubble.css";
+import "./assets/vendor/quill/quill.snow.css";
+import "./assets/vendor/boxicons/css/boxicons.min.css";
+import "./assets/vendor/bootstrap-icons/bootstrap-icons.css";
+import "./assets/vendor/bootstrap/css/bootstrap.min.css";
+import "./assets/css/style.css";
+
 // import * as Kilt from '@kiltprotocol/sdk-js'
 import TopNav from "./components/UI_components/TopNav";
 import { Navbar } from "./components/UI_components/Navbar";
@@ -52,7 +68,7 @@ const MainConetent = styled.div`
   }
   @media ${device.laptopS} {
     width: 100%;
-  justify-content: space-between;
+    justify-content: space-between;
     .desk-markt {
       display: none;
     }
@@ -65,7 +81,7 @@ const MainConetent = styled.div`
   }
   @media ${device.tablet} {
     display: flex;
-    width:100%;
+    width: 100%;
     .desk-markt {
       display: none;
     }
@@ -138,6 +154,7 @@ const WModalFooter = styled(ModalFooter)`
   }
 `;
 function App() {
+  const [activeLink, setActiveLink] = useState("");
   const [connectModalOpen, setConnectModalOpen] = useState(null);
   const [errorModalOpen, setErrorModalOpen] = useState(null);
   const [networkError, setNetworkError] = useState(null);
@@ -149,7 +166,7 @@ function App() {
   const { account, library, activate, active, connector, deactivate } =
     useWeb3React();
   const connectAccount = () => {
-    console.log("come here")
+    console.log("come here");
     setConnectModalOpen(true);
   };
   const connectToProvider = (connector) => {
@@ -350,309 +367,384 @@ function App() {
     setIsKiltOpen(false);
   };
   return (
-    <ThemeProvider>
-      <AppContainer>
-        <>
-          <TopNav />
-          <MainConetent>
-            <Navbar
-              connectAccount={connectAccount}
-              connectKusama={connectKusama}
-              kuWallet={kuWallet}
-              openLogoutModal={openLogoutModal}
-            />
-            <div className="r-l-border responsive">
-              <MyRoutes
-                connectAccount={connectAccount}
-                getUser={getUser}
-                user={user}
-                loginWithKilt={loginWithKilt}
-                logoutWithKilt={logoutWithKilt}
-                connectKusama={connectKusama}
-                kuWallet={kuWallet}
-                setIsKuError={setIsKuError}
-                connectSporran={connectSporran}
-                kiltWallet={kiltWallet}
-                setIsKiltError={setIsKiltError}
-              />
+    <div className="">
+      <Web3Provider>
+        <Nav />
+        <Sidenav activeLink={activeLink} setActive={setActiveLink} />
+        <main id="main" className="main">
+          <section className="section dashboard">
+            <div className="row">
+              <ThemeProvider>
+                <AppContainer>
+                  <>
+                    {/* <TopNav /> */}
+                    <MainConetent>
+                      {/* <Navbar
+                      connectAccount={connectAccount}
+                      connectKusama={connectKusama}
+                      kuWallet={kuWallet}
+                      openLogoutModal={openLogoutModal}
+                    /> */}
+                      <div className="r-l-border responsive">
+                        <MyRoutes
+                          connectAccount={connectAccount}
+                          getUser={getUser}
+                          user={user}
+                          loginWithKilt={loginWithKilt}
+                          logoutWithKilt={logoutWithKilt}
+                          connectKusama={connectKusama}
+                          kuWallet={kuWallet}
+                          setIsKuError={setIsKuError}
+                          connectSporran={connectSporran}
+                          kiltWallet={kiltWallet}
+                          setIsKiltError={setIsKiltError}
+                        />
+                      </div>
+                      {device.mobile && (
+                        <div className="desk-markt">
+                          <MarketPlace />
+                        </div>
+                      )}
+                    </MainConetent>
+                    <FooterMobile />
+                  </>
+                  {!!errorModalOpen && !active && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap
+                          className="modal-wrap"
+                          style={{ paddingBottom: 24 }}
+                        >
+                          <ModalBody>
+                            <h3 className="success-title">
+                              Connect your wallet
+                            </h3>
+                            {errorType === "chain" && (
+                              <h5 className="success-subtitle">
+                                Wrong Network
+                              </h5>
+                            )}
+                            <h5 className="success-subtitle">
+                              {errorType === "chain"
+                                ? "Please switch your network to Exosama"
+                                : networkError}
+                            </h5>
+                          </ModalBody>
+                          <WModalFooter>
+                            {errorType === "chain" ? (
+                              <button
+                                onClick={() => {
+                                  setErrorModalOpen(false);
+                                  connectAccount();
+                                }}
+                                style={{ letterSpacing: 0 }}
+                              >
+                                <img src="/assets/bird-white.svg" alt="" />
+                                Switch to Exosama Network
+                              </button>
+                            ) : (
+                              <button onClick={() => setErrorModalOpen(false)}>
+                                <img src="/assets/bird-white.svg" alt="" />
+                                CLOSE
+                              </button>
+                            )}
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+                  {!!connectModalOpen && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap className="modal-wrap">
+                          <WModalBody>
+                            <img src="/assets/bird-white.svg" alt="" />
+                            <h3 className="success-title">
+                              Connect your wallet
+                            </h3>
+                            <div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {connectors.map((entry, index) => (
+                                  <WModalWalletButton
+                                    key={index}
+                                    onClick={() => {
+                                      window.localStorage.setItem(
+                                        connectorLocalStorageKey,
+                                        entry.key
+                                      );
+                                      connectToProvider(entry.connectorId);
+                                      setConnectModalOpen(false);
+                                    }}
+                                  >
+                                    {entry.title} <entry.icon width={30} />
+                                  </WModalWalletButton>
+                                ))}
+                              </div>
+                            </div>
+                          </WModalBody>
+                          <WModalFooter>
+                            <WModalCloseButton
+                              onClick={() => setConnectModalOpen(false)}
+                            >
+                              CLOSE
+                            </WModalCloseButton>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+                  {!!logoutModalOpen && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap className="modal-wrap">
+                          <WModalBody>
+                            <img src="/assets/bird-white.svg" alt="" />
+                            <h3 className="success-title">
+                              Connected your wallet
+                            </h3>
+                            <h5
+                              style={{
+                                color: "white",
+                                wordBreak: "break-all",
+                                paddingBottom: "10px",
+                              }}
+                            >
+                              {account}
+                            </h5>
+                            <div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <WModalWalletButton
+                                  onClick={() => handleLogout()}
+                                >
+                                  LOGOUT
+                                </WModalWalletButton>
+                              </div>
+                            </div>
+                          </WModalBody>
+                          <WModalFooter>
+                            <WModalCloseButton
+                              onClick={() => setLogoutModalOpen(false)}
+                            >
+                              CLOSE
+                            </WModalCloseButton>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+
+                  {/* Kusama Wallet Modal */}
+                  {!!isKuError && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap
+                          className="modal-wrap"
+                          style={{ paddingBottom: 24 }}
+                        >
+                          <ModalBody>
+                            <h3 className="success-title">
+                              Connect your wallet
+                            </h3>
+                            <h5 className="success-subtitle">
+                              Please check your polkadot connection in kusama
+                              network
+                            </h5>
+                            <h5 className="success-subtitle">
+                              <a
+                                href="https://polkadot.js.org/extension/"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Polkadot Extension
+                              </a>
+                            </h5>
+                          </ModalBody>
+                          <WModalFooter>
+                            <button onClick={() => setIsKuError(false)}>
+                              <img src="/assets/bird-white.svg" alt="" />
+                              CLOSE
+                            </button>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+
+                  {!!isKuOpen && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap className="modal-wrap">
+                          <WModalBody>
+                            <img src="/assets/bird-white.svg" alt="" />
+                            <h3 className="success-title">
+                              Connect your wallet
+                            </h3>
+                            <div className="wallet-list">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {kuAccounts.map((kuAccount, index) => (
+                                  <WModalWalletButton
+                                    key={index}
+                                    onClick={() => saveKuwallet(kuAccount)}
+                                  >
+                                    <Identicon
+                                      value={kuAccount.address}
+                                      size={44}
+                                      theme={"polkadot"}
+                                      style={{ marginRight: 20 }}
+                                    />
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                      }}
+                                    >
+                                      <span>{kuAccount.meta.name}</span>
+                                      <span
+                                        style={{
+                                          fontSize: 12,
+                                          wordBreak: "break-all",
+                                          textTransform: "none",
+                                        }}
+                                      >
+                                        {shorter(kuAccount.address)}
+                                      </span>
+                                    </div>
+                                  </WModalWalletButton>
+                                ))}
+                              </div>
+                            </div>
+                          </WModalBody>
+                          <WModalFooter>
+                            <WModalCloseButton
+                              onClick={() => setIsKuOpen(false)}
+                            >
+                              CLOSE
+                            </WModalCloseButton>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+
+                  {/* KILT Wallet Modal */}
+                  {!!isKiltError && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap
+                          className="modal-wrap"
+                          style={{ paddingBottom: 24 }}
+                        >
+                          <ModalBody>
+                            <h3 className="success-title">
+                              Connect Your Sporran Wallet
+                            </h3>
+                            <h5 className="success-subtitle">
+                              Please check your sporran wallet in kilt blokchain
+                              network
+                            </h5>
+                            <h5 className="success-subtitle">
+                              <a
+                                href="https://www.sporran.org"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Sporran Wallet Extension
+                              </a>
+                            </h5>
+                          </ModalBody>
+                          <WModalFooter>
+                            <button onClick={() => setIsKiltError(false)}>
+                              <img src="/assets/bird-white.svg" alt="" />
+                              CLOSE
+                            </button>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+
+                  {!!isKiltOpen && (
+                    <ModalWindow className="modal-window">
+                      <ModalContainer>
+                        <ModalWrap className="modal-wrap">
+                          <WModalBody>
+                            <img src="/assets/bird-white.svg" alt="" />
+                            <h3 className="success-title">
+                              Connect Your Sporran Wallet
+                            </h3>
+                            <div className="wallet-list">
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                {kiltAccounts.map((kiltAccount, index) => (
+                                  <WModalWalletButton
+                                    key={index}
+                                    onClick={() => saveKiltWallet(kiltAccount)}
+                                  >
+                                    <Identicon
+                                      value={kiltAccount.address}
+                                      size={44}
+                                      theme={"polkadot"}
+                                      style={{ marginRight: 20 }}
+                                    />
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                      }}
+                                    >
+                                      <span>{kiltAccount.meta.name}</span>
+                                      <span
+                                        style={{
+                                          fontSize: 12,
+                                          wordBreak: "break-all",
+                                          textTransform: "none",
+                                        }}
+                                      >
+                                        {shorter(kiltAccount.address)}
+                                      </span>
+                                    </div>
+                                  </WModalWalletButton>
+                                ))}
+                              </div>
+                            </div>
+                          </WModalBody>
+                          <WModalFooter>
+                            <WModalCloseButton
+                              onClick={() => setIsKiltOpen(false)}
+                            >
+                              CLOSE
+                            </WModalCloseButton>
+                          </WModalFooter>
+                        </ModalWrap>
+                      </ModalContainer>
+                    </ModalWindow>
+                  )}
+                </AppContainer>
+              </ThemeProvider>
             </div>
-            {device.mobile && (
-              <div className="desk-markt">
-                <MarketPlace />
-              </div>
-            )}
-          </MainConetent>
-          <FooterMobile />
-        </>
-        {!!errorModalOpen && !active && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap" style={{ paddingBottom: 24 }}>
-                <ModalBody>
-                  <h3 className="success-title">Connect your wallet</h3>
-                  {errorType === "chain" && (
-                    <h5 className="success-subtitle">Wrong Network</h5>
-                  )}
-                  <h5 className="success-subtitle">
-                    {errorType === "chain"
-                      ? "Please switch your network to Exosama"
-                      : networkError}
-                  </h5>
-                </ModalBody>
-                <WModalFooter>
-                  {errorType === "chain" ? (
-                    <button
-                      onClick={() => {
-                        setErrorModalOpen(false);
-                        connectAccount();
-                      }}
-                      style={{ letterSpacing: 0 }}
-                    >
-                      <img src="/assets/bird-white.svg" alt="" />
-                      Switch to Exosama Network
-                    </button>
-                  ) : (
-                    <button onClick={() => setErrorModalOpen(false)}>
-                      <img src="/assets/bird-white.svg" alt="" />
-                      CLOSE
-                    </button>
-                  )}
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-        {!!connectModalOpen && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap">
-                <WModalBody>
-                  <img src="/assets/bird-white.svg" alt="" />
-                  <h3 className="success-title">Connect your wallet</h3>
-                  <div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      {connectors.map((entry, index) => (
-                        <WModalWalletButton
-                          key={index}
-                          onClick={() => {
-                            window.localStorage.setItem(
-                              connectorLocalStorageKey,
-                              entry.key
-                            );
-                            connectToProvider(entry.connectorId);
-                            setConnectModalOpen(false);
-                          }}
-                        >
-                          {entry.title} <entry.icon width={30} />
-                        </WModalWalletButton>
-                      ))}
-                    </div>
-                  </div>
-                </WModalBody>
-                <WModalFooter>
-                  <WModalCloseButton onClick={() => setConnectModalOpen(false)}>
-                    CLOSE
-                  </WModalCloseButton>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-        {!!logoutModalOpen && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap">
-                <WModalBody>
-                  <img src="/assets/bird-white.svg" alt="" />
-                  <h3 className="success-title">Connected your wallet</h3>
-                  <h5
-                    style={{
-                      color: "white",
-                      wordBreak: "break-all",
-                      paddingBottom: "10px",
-                    }}
-                  >
-                    {account}
-                  </h5>
-                  <div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <WModalWalletButton onClick={() => handleLogout()}>
-                        LOGOUT
-                      </WModalWalletButton>
-                    </div>
-                  </div>
-                </WModalBody>
-                <WModalFooter>
-                  <WModalCloseButton onClick={() => setLogoutModalOpen(false)}>
-                    CLOSE
-                  </WModalCloseButton>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-
-        {/* Kusama Wallet Modal */}
-        {!!isKuError && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap" style={{ paddingBottom: 24 }}>
-                <ModalBody>
-                  <h3 className="success-title">Connect your wallet</h3>
-                  <h5 className="success-subtitle">
-                    Please check your polkadot connection in kusama network
-                  </h5>
-                  <h5 className="success-subtitle">
-                    <a
-                      href="https://polkadot.js.org/extension/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Polkadot Extension
-                    </a>
-                  </h5>
-                </ModalBody>
-                <WModalFooter>
-                  <button onClick={() => setIsKuError(false)}>
-                    <img src="/assets/bird-white.svg" alt="" />
-                    CLOSE
-                  </button>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-
-        {!!isKuOpen && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap">
-                <WModalBody>
-                  <img src="/assets/bird-white.svg" alt="" />
-                  <h3 className="success-title">Connect your wallet</h3>
-                  <div className="wallet-list">
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      {kuAccounts.map((kuAccount, index) => (
-                        <WModalWalletButton
-                          key={index}
-                          onClick={() => saveKuwallet(kuAccount)}
-                        >
-                          <Identicon
-                            value={kuAccount.address}
-                            size={44}
-                            theme={"polkadot"}
-                            style={{ marginRight: 20 }}
-                          />
-                          <div
-                            style={{ display: "flex", flexDirection: "column" }}
-                          >
-                            <span>{kuAccount.meta.name}</span>
-                            <span
-                              style={{
-                                fontSize: 12,
-                                wordBreak: "break-all",
-                                textTransform: "none",
-                              }}
-                            >
-                              {shorter(kuAccount.address)}
-                            </span>
-                          </div>
-                        </WModalWalletButton>
-                      ))}
-                    </div>
-                  </div>
-                </WModalBody>
-                <WModalFooter>
-                  <WModalCloseButton onClick={() => setIsKuOpen(false)}>
-                    CLOSE
-                  </WModalCloseButton>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-
-        {/* KILT Wallet Modal */}
-        {!!isKiltError && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap" style={{ paddingBottom: 24 }}>
-                <ModalBody>
-                  <h3 className="success-title">Connect Your Sporran Wallet</h3>
-                  <h5 className="success-subtitle">
-                    Please check your sporran wallet in kilt blokchain network
-                  </h5>
-                  <h5 className="success-subtitle">
-                    <a
-                      href="https://www.sporran.org"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Sporran Wallet Extension
-                    </a>
-                  </h5>
-                </ModalBody>
-                <WModalFooter>
-                  <button onClick={() => setIsKiltError(false)}>
-                    <img src="/assets/bird-white.svg" alt="" />
-                    CLOSE
-                  </button>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-
-        {!!isKiltOpen && (
-          <ModalWindow className="modal-window">
-            <ModalContainer>
-              <ModalWrap className="modal-wrap">
-                <WModalBody>
-                  <img src="/assets/bird-white.svg" alt="" />
-                  <h3 className="success-title">Connect Your Sporran Wallet</h3>
-                  <div className="wallet-list">
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      {kiltAccounts.map((kiltAccount, index) => (
-                        <WModalWalletButton
-                          key={index}
-                          onClick={() => saveKiltWallet(kiltAccount)}
-                        >
-                          <Identicon
-                            value={kiltAccount.address}
-                            size={44}
-                            theme={"polkadot"}
-                            style={{ marginRight: 20 }}
-                          />
-                          <div
-                            style={{ display: "flex", flexDirection: "column" }}
-                          >
-                            <span>{kiltAccount.meta.name}</span>
-                            <span
-                              style={{
-                                fontSize: 12,
-                                wordBreak: "break-all",
-                                textTransform: "none",
-                              }}
-                            >
-                              {shorter(kiltAccount.address)}
-                            </span>
-                          </div>
-                        </WModalWalletButton>
-                      ))}
-                    </div>
-                  </div>
-                </WModalBody>
-                <WModalFooter>
-                  <WModalCloseButton onClick={() => setIsKiltOpen(false)}>
-                    CLOSE
-                  </WModalCloseButton>
-                </WModalFooter>
-              </ModalWrap>
-            </ModalContainer>
-          </ModalWindow>
-        )}
-      </AppContainer>
-    </ThemeProvider>
+          </section>
+        </main>
+      </Web3Provider>
+    </div>
   );
 }
 
