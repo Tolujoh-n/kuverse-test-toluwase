@@ -44,6 +44,7 @@ In the project directory, you can run:
 ### `npm install -g truffle`
 
 ## Deploy your contract
+- Sepolia network was used.
 
 ### `cd contracts`
 
@@ -52,6 +53,8 @@ In the project directory, you can run:
 ### `truffle migrate --network sepolia`
 
 ## NOTE: Create a file .env and copy the .env.example file code inside and update it with your passkeys and infura_id
+
+## Update the constantinfo.js inside the frontend component with your deployed smart contract address and the Nftmint.json with your ABI json
 
 ## Running the ke verse frontend
 
