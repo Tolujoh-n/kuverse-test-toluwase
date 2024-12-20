@@ -99,6 +99,33 @@ backgroung: #1a2c38
   width: 20px;
   height: 20px;
 }
+/* Close button styles */
+.close-button {
+  padding: 10px 20px;
+  background-color: #f44336; /* Red color for Close */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  background-color: #e13b3b; /* Darker red for hover */
+}
+
+/* Mint button styles */
+.mint-button {
+  padding: 10px 20px;
+  background-color: rgb(1, 81, 101); /* Green color for Mint NFT */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.mint-button:hover {
+  background-color: rgb(16, 115, 138); /* Darker green for hover */
+}
 
 /*--------------------------------------------------------------
 # General profile

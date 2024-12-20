@@ -444,7 +444,7 @@ export const About = () => {
                         }}
                       >
                         Connect both wallets to bridge your KU EGG from Kusama
-                        to Exosama. <br />
+                        to Spolia. <br />
                         <br />
                         Turn on thee inKUbator, and let it go brz’ buzz.
                       </TextSpan2>

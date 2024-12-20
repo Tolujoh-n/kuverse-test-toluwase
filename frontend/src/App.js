@@ -4,6 +4,8 @@ import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import Nav from "./components/Nav";
 import Sidenav from "./components/Sidenav";
 import { Web3Provider } from "./Web3Provider";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   connectors,
@@ -408,7 +410,7 @@ function App() {
                     </MainConetent>
                     <FooterMobile />
                   </>
-                  {!!errorModalOpen && !active && (
+                  {/* {!!errorModalOpen && !active && (
                     <ModalWindow className="modal-window">
                       <ModalContainer>
                         <ModalWrap
@@ -541,7 +543,7 @@ function App() {
                         </ModalWrap>
                       </ModalContainer>
                     </ModalWindow>
-                  )}
+                  )} */}
 
                   {/* Kusama Wallet Modal */}
                   {!!isKuError && (

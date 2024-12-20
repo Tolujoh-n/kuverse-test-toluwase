@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, Toaster } from "sonner";
 import { ethers } from "ethers";
 import { ABI, CONTRACT_ADDRESS } from "./Contractinfo";
 import { useWeb3 } from "../Web3Provider";
 import "react-toastify/dist/ReactToastify.css";
+import Nftlist from "./Nftlist";
 
 const modalStyle = {
   display: "block",
@@ -50,24 +51,6 @@ const buttonContainerStyle = {
   alignItems: "center",
 };
 
-const closeButtonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "#f44336", // Red color for Close
-  color: "#fff",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-};
-
-const mintButtonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "rgb(1, 81, 101)", // Green color for Mint NFT
-  color: "#fff",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-};
-
 const Nav = (props) => {
   const {
     connected,
@@ -80,7 +63,6 @@ const Nav = (props) => {
   const [mintData, setMintData] = useState({ title: "", uri: "" });
   const [userNFTs, setUserNFTs] = useState([]);
 
-  const navigate = useNavigate();
   const location = useLocation();
 
   const fetchNFTs = async () => {
@@ -118,7 +100,8 @@ const Nav = (props) => {
       const signer = provider.getSigner();
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
-      const tx = await contract.mint(account, mintData.title, mintData.uri);
+      // Use the correct contract method and pass both the URI and title
+      const tx = await contract.mintNFT(mintData.uri, mintData.title);
       await tx.wait();
 
       toast.success("NFT minted successfully!");
@@ -272,17 +255,7 @@ const Nav = (props) => {
         )}
       </ul>
       <br />
-      <ul className="sidebar-nav">
-        <li className="nav-item">
-          <h4>Your NFTs</h4>
-          {userNFTs.map((nft, index) => (
-            <div key={index} className="nft-item">
-              <span>Token ID: {nft.tokenId}</span>
-              <span>URI: {nft.uri}</span>
-            </div>
-          ))}
-        </li>
-      </ul>
+      {connected && <Nftlist />}
 
       {showModal && (
         <div style={modalStyle}>
@@ -313,18 +286,19 @@ const Nav = (props) => {
 
             <div style={buttonContainerStyle}>
               <button
-                style={closeButtonStyle}
+                className="close-button"
                 onClick={() => setShowModal(false)}
               >
                 Close
               </button>
-              <button style={mintButtonStyle} onClick={handleMint}>
+              <button className="mint-button" onClick={handleMint}>
                 Mint NFT
               </button>
             </div>
           </div>
         </div>
       )}
+      <Toaster />
     </aside>
   );
 };
