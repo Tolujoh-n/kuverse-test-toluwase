@@ -17,7 +17,7 @@ module.exports = {
           `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}` // Replace with your Infura Project ID
         ),
       network_id: 11155111, // Sepolia Testnet ID
-      gas: 5500000,
+      gas: 20000000000,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: true,

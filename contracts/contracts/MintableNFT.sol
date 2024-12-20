@@ -1,36 +1,20 @@
-// SPDX-License-Identifier: MIT
+// Solidity Smart Contract
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract MyNFT is ERC721, Ownable {
-    mapping(uint256 => string) private _tokenURIs;
+contract NFTMinter is ERC721URIStorage, Ownable {
+    uint256 public tokenCounter;
 
-    constructor() ERC721("MyNFT", "MNFT") Ownable() {}
-
-    // Function to check if token exists
-    function _exists(uint256 tokenId) internal view returns (bool) {
-        // We use a try-catch approach for external calls
-        try ownerOf(tokenId) returns (address) {
-            return true;
-        } catch {
-            return false;
-        }
+    constructor() ERC721("NFTMinter", "NFTM") Ownable(msg.sender) {
+        tokenCounter = 0;
     }
 
-    function _setTokenURI(uint256 tokenId, string memory uri) internal {
-        require(_exists(tokenId), "ERC721Metadata: URI set of nonexistent token");
-        _tokenURIs[tokenId] = uri;
-    }
-
-    function mint(address to, uint256 tokenId, string memory uri) public onlyOwner {
-        _mint(to, tokenId);
-        _setTokenURI(tokenId, uri);
-    }
-
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-        return _tokenURIs[tokenId];
+    function mintNFT(string memory _tokenURI) public {
+        uint256 newItemId = tokenCounter;
+        _safeMint(msg.sender, newItemId);
+        _setTokenURI(newItemId, _tokenURI);
+        tokenCounter += 1;
     }
 }
