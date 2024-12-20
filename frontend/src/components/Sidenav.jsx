@@ -14,20 +14,58 @@ const modalStyle = {
   left: "0",
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.4)",
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // Slightly darker background
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
 };
 
 const modalContentStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  background: "rgb(0, 143, 179)",
-  color: "#b1bad3",
-  border: "5px solid #b1bad3",
+  backgroundColor: "rgb(0, 143, 179)",
+  border: "1px solid #ccc",
+  color: "#fff",
   padding: "20px",
-  width: "80%",
-  maxWidth: "600px",
+  borderRadius: "8px", // Rounded corners
+  width: "100%",
+  maxWidth: "500px",
+  boxSizing: "border-box", // Ensures padding is included in the width calculation
+  display: "flex",
+  flexDirection: "column",
+  gap: "15px", // Space between form fields
+};
+
+const inputStyle = {
+  padding: "10px",
+  fontSize: "14px",
+  border: "1px solid #ccc",
+  borderRadius: "5px",
+  outline: "none",
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+const buttonContainerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+const closeButtonStyle = {
+  padding: "10px 20px",
+  backgroundColor: "#f44336", // Red color for Close
+  color: "#fff",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+};
+
+const mintButtonStyle = {
+  padding: "10px 20px",
+  backgroundColor: "rgb(1, 81, 101)", // Green color for Mint NFT
+  color: "#fff",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
 };
 
 const Nav = (props) => {
@@ -191,7 +229,11 @@ const Nav = (props) => {
                   <span>{shortenAddress(account)}</span>
                 </Link>
               </li>
-              <button onClick={connectWallet} type="button" id="optionbut">
+              <button
+                onClick={() => setShowModal(true)}
+                type="button"
+                id="optionbut"
+              >
                 Mint
               </button>
 
@@ -249,6 +291,7 @@ const Nav = (props) => {
             <label>
               Title:
               <input
+                style={inputStyle}
                 type="text"
                 value={mintData.title}
                 onChange={(e) =>
@@ -259,6 +302,7 @@ const Nav = (props) => {
             <label>
               URI:
               <input
+                style={inputStyle}
                 type="text"
                 value={mintData.uri}
                 onChange={(e) =>
@@ -266,8 +310,18 @@ const Nav = (props) => {
                 }
               />
             </label>
-            <button onClick={handleMint}>Submit</button>
-            <button onClick={() => setShowModal(false)}>Close</button>
+
+            <div style={buttonContainerStyle}>
+              <button
+                style={closeButtonStyle}
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+              <button style={mintButtonStyle} onClick={handleMint}>
+                Mint NFT
+              </button>
+            </div>
           </div>
         </div>
       )}
